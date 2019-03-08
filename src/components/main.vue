@@ -3,17 +3,23 @@
     <div class="calendar-title">
       <div class="calendar-title_text">365存钱计划</div>
       <div class="calendar-title_status">
-        <div >已存：{{savedDay}}/365天</div>
-        <div >已存：{{savedMoney}}/{{totalMoney}}元</div>
+        <div >已存 {{savedDay}}/365天</div>
+        <div >{{changeTotaltoFixed(savedMoney)}}/{{changeTotaltoFixed(totalMoney*mode)}}元</div>
       </div>
-
+      <div class="calendar-title_mode" @change="changeMode">
+        模式：
+        <input type="radio" name="mode" value="0.1" v-model="mode"> 0.1
+        <input type="radio" name="mode" value="0.5" v-model="mode"> 0.5
+        <input type="radio" name="mode" value="1" v-model="mode"> 1
+      </div>
     </div>
+
     <div class="calendar">
       <div class="date-container" v-for="i in dateArr" :key="i.key"  @click="onClickHeart(i)">
         <div class="date">
           <div class="date-left-heart" :style="i.saved?redHeartStyle:normalHeartStyle"></div>
           <div class="date-top-heart" :style="i.saved?redHeartStyle:normalHeartStyle"></div>
-          <div class="date-square" :style="i.saved?redHeartStyle:normalHeartStyle"> <div class="save-heart_text">{{i.index}}</div></div>
+          <div class="date-square" :style="i.saved?redHeartStyle:normalHeartStyle"> <div class="save-heart_text">{{changeTotaltoFixed(i.index * mode)}}</div></div>
         </div>
       </div>
 
@@ -31,6 +37,12 @@ export default {
       this.dateArr = JSON.parse(window.localStorage.getItem('dateArr'))
       this.totalMoney = window.localStorage.getItem('totalMoney') ? window.localStorage.getItem('totalMoney') : this.calculateTotalMoney()
     }
+
+    if(!window.localStorage.getItem('mode')) {
+      this.mode = 1;
+    }else{
+      this.mode = window.localStorage.getItem('mode');
+    }
   },
   data () {
     return {
@@ -43,7 +55,8 @@ export default {
         color: 'white'
       },
       borderWidth: '2px',
-      totalMoney: 0
+      totalMoney: 0,
+      mode: 1
     }
   },
   computed: {
@@ -60,7 +73,7 @@ export default {
           _total += item.index
         })
       }
-      return _total
+      return _total* this.mode
     }
   },
   methods: {
@@ -85,8 +98,17 @@ export default {
         _total += i
       }
       return _total
+    },
+    changeMode (e) {
+      this.mode = e.target.value;
+      window.localStorage.setItem('mode', e.target.value);
+    },
+    changeTotaltoFixed(num){
+      if(this.mode !==1){
+        return num.toFixed(1)
+      }
+      return num
     }
-
   }
 }
 </script>
@@ -116,6 +138,13 @@ export default {
         float: right;
         text-align: end;
         margin: 5px 10px;
+        width: 40%;
+      }
+      .calendar-title_mode{
+        width: 100%;
+        float:left;
+        text-align: left;
+        padding: 0px 10px;
       }
     }
   }
@@ -123,7 +152,7 @@ export default {
     position: relative;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 2px 6px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
     border-radius: 5px;
-    margin: -30px 0px;
+    margin:  0px;
     padding: 10px;
     background: white;
     width: 100%;
