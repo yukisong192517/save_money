@@ -38,10 +38,10 @@ export default {
       this.totalMoney = window.localStorage.getItem('totalMoney') ? window.localStorage.getItem('totalMoney') : this.calculateTotalMoney()
     }
 
-    if(!window.localStorage.getItem('mode')) {
-      this.mode = 1;
-    }else{
-      this.mode = window.localStorage.getItem('mode');
+    if (!window.localStorage.getItem('mode')) {
+      this.mode = 1
+    } else {
+      this.mode = window.localStorage.getItem('mode')
     }
   },
   data () {
@@ -73,7 +73,7 @@ export default {
           _total += item.index
         })
       }
-      return _total* this.mode
+      return _total * this.mode
     }
   },
   methods: {
@@ -100,11 +100,11 @@ export default {
       return _total
     },
     changeMode (e) {
-      this.mode = e.target.value;
-      window.localStorage.setItem('mode', e.target.value);
+      this.mode = e.target.value
+      window.localStorage.setItem('mode', e.target.value)
     },
-    changeTotaltoFixed(num){
-      if(this.mode !==1){
+    changeTotaltoFixed (num) {
+      if (this.mode !== 1) {
         return num.toFixed(1)
       }
       return num
